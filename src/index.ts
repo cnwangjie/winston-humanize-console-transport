@@ -1,1 +1,4 @@
-export const add = (a: number, b: number) => a + b
+import ConsoleTransport from './ConsoleTransport'
+
+export * from './ConsoleTransport'
+export default ConsoleTransport
