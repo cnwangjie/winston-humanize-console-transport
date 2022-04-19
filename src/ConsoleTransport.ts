@@ -58,6 +58,11 @@ export default class ConsoleTransport extends Transport {
     const tid = chalk.gray(traceId || '')
     const rest = Object.entries(meta)
       .map(([k, v]) => {
+        if (typeof v === 'string' && (v.includes('\n') || v.length > 120)) {
+          return (
+            '\n' + k + chalk.gray('=') + chalk.greenBright('`' + v + '`') + '\n'
+          )
+        }
         return k + chalk.gray('=') + inspect(v, { colors: true })
       })
       .join(' ')
