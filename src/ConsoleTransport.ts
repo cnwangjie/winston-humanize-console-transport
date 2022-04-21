@@ -1,6 +1,6 @@
 import Transport from 'winston-transport'
 import chalk from 'chalk'
-import { inspect } from 'util'
+import { inspect, type InspectOptions } from 'util'
 import { Writable } from 'stream'
 
 const colors: any = {
@@ -14,6 +14,7 @@ export interface ConsoleTransportOption
   extends Transport.TransportStreamOptions {
   stdout?: Writable
   stderr?: Writable
+  inspectOptions?: InspectOptions
 }
 
 export default class ConsoleTransport extends Transport {
@@ -59,11 +60,17 @@ export default class ConsoleTransport extends Transport {
     const rest = Object.entries(meta)
       .map(([k, v]) => {
         if (typeof v === 'string' && (v.includes('\n') || v.length > 120)) {
-          return (
-            '\n' + k + chalk.gray('=') + chalk.greenBright('`' + v + '`') + '\n'
-          )
+          return '\n' + k + chalk.gray('=') + chalk.green('`' + v + '`') + '\n'
         }
-        return k + chalk.gray('=') + inspect(v, { colors: true })
+        return (
+          k +
+          chalk.gray('=') +
+          inspect(v, {
+            colors: true,
+            depth: 10,
+            ...this.options.inspectOptions,
+          })
+        )
       })
       .join(' ')
 
